@@ -17,12 +17,13 @@
  * @param socket The socket that the client is on.
  * @param url The URL that the client requested.
  */
-void handleResponse(int socket, char *url) {
+void handleResponse(int socket, char *url, char *home) {
     if (!strcmp(url, "/")) {
         url = "/index.html";
     }
 
-    char fileDest[256] = "public_html";
+    char fileDest[256];
+    strcpy(fileDest, home);
     strncat(fileDest, url, 256);
 
     // Check if the file exists.
@@ -75,7 +76,7 @@ void handleResponse(int socket, char *url) {
  *
  * @param socket The socket that the client is on.
  */
-void handleRequest(int socket) {
+void handleRequest(int socket, char *home) {
     size_t arraySize = 256;
     ssize_t length;
     char buffer[arraySize];
@@ -108,7 +109,7 @@ void handleRequest(int socket) {
             snprintf(formattedError, sizeof(formattedError), bad_method_response_html_template, method);
             send(socket, formattedError, strlen(formattedError), 0);
         } else {
-            handleResponse(socket, url);
+            handleResponse(socket, url, home);
         }
     }
 }

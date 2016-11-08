@@ -8,6 +8,7 @@
 #include "connection.h"
 
 int initialSocket;
+char *home;
 pid_t pid;
 
 /**
@@ -17,8 +18,8 @@ pid_t pid;
  * @param argv The array of arguments.
  */
 void checkRunParams(int argc, char *argv[]) {
-    if (argc != 2) {
-        fprintf(stderr, "usage %s port\n", argv[0]);
+    if (argc != 3) {
+        fprintf(stderr, "usage %s port homedir\n", argv[0]);
         exit(1);
     }
 }
@@ -69,7 +70,7 @@ void handleProcess(int clientSocket) {
         close(initialSocket);
 
         // Handle the client's request.
-        handleRequest(clientSocket);
+        handleRequest(clientSocket, home);
 
         // Request handled, cleanup process.
         close(clientSocket);
@@ -100,6 +101,9 @@ void acceptConnections() {
 int main(int argc, char *argv[]) {
     // Check that correct arguments were given.
     checkRunParams(argc, argv);
+
+    // Set the home directory
+    home = argv[2];
 
     // Initialise a socket listening on the given port.
     initialSocket = init(argv[1]);
