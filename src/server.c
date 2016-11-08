@@ -3,10 +3,12 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <unistd.h>
+#include <wait.h>
 #include "network.h"
 #include "connection.h"
 
 int initialSocket;
+pid_t pid;
 
 /**
  * Check that the program arguments were correct.
@@ -28,17 +30,23 @@ void checkRunParams(int argc, char *argv[]) {
  */
 void sig_handler(int signo) {
     if (signo == SIGINT) {
-        // Inform of interrupt being received.
-        printf("\nReceived SIGINT\n");
+        if (pid != 0) {
+            // Inform of interrupt being received.
+            printf("\nReceived SIGINT\n");
 
-        // Close the initial socket.
-        printf("Closing socket...\n");
-        if (close(initialSocket) != 0) {
-            fprintf(stderr, "Failed to close socket.\n");
+            wait(NULL);
+
+            // Close the initial socket.
+            printf("Closing socket...\n");
+            if (close(initialSocket) != 0) {
+                fprintf(stderr, "Failed to close socket.\n");
+            }
+
+            // Exit the program cleanly after threads.
+            exit(0);
+        } else {
+            exit(0);
         }
-
-        // Exit the program cleanly after threads.
-        exit(0);
     }
 }
 
@@ -48,7 +56,7 @@ void sig_handler(int signo) {
  * @param clientSocket The socket that the client is on.
  */
 void handleProcess(int clientSocket) {
-    pid_t pid = fork();
+    pid = fork();
 
     // Check that forking didn't return an error.
     if (pid < 0) {
