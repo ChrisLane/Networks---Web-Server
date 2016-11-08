@@ -1,12 +1,12 @@
 /*static char *ver_HTTP10_response = "HTTP/1.0\n";
 static char *ver_HTTP11_response = "HTTP/1.1\n";*/
-static char *content_type_response = "Content-type: %s\n";
+static char *content_type_response = "Content-Type: %s\n";
 
 /**
  * HTTP OK response and header.
  */
 static char *ok_response =
-        "HTTP/1.0 200 OK\n";
+        "HTTP/1.1 200 OK\n";
 
 /**
  * HTTP bad request response, header and body.

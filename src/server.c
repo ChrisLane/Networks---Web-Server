@@ -8,6 +8,8 @@
 #include <dnet.h>
 #include <unistd.h>
 #include <magic.h>
+#include <fcntl.h>
+#include <sys/sendfile.h>
 
 #include "response.c"
 
@@ -122,8 +124,8 @@ void handleResponse(int socket, char *url) {
     char fileDest[256] = "public_html";
     strncat(fileDest, url, 256);
 
-    FILE *file = fopen(fileDest, "r");
-    if (file) {
+    int file = open(fileDest, O_RDONLY);
+    if (file != -1) {
         char response[1024];
         strcat(response, ok_response);
 
@@ -135,23 +137,22 @@ void handleResponse(int socket, char *url) {
 
         char contentType[256];
         snprintf(contentType, sizeof(contentType), content_type_response, mime);
-        strcat(response, contentType);
+
+        // If magic determines the file is plaintext, leave the decision to the browser.
+        if (!strstr(contentType, "text/plain")) {
+            strcat(response, contentType);
+        }
         strcat(response, "\n");
         magic_close(magic);
+
+        send(socket, response, strlen(response), 0);
 
         struct stat *fileStats = malloc(sizeof(struct stat));
         stat(fileDest, fileStats);
 
+        sendfile(socket, file, 0, (size_t) fileStats->st_size);
 
-        char *fileContents = malloc(sizeof(char) * fileStats->st_size);
-        while (fgets(fileContents, (int) fileStats->st_size, file)) {
-            strcat(response, fileContents);
-        }
-
-        strcat(response, "\n");
-        send(socket, response, strlen(response), 0);
-
-        fclose(file);
+        close(file);
     } else {
 
     }
