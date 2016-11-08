@@ -1,17 +1,17 @@
 /*static char *ver_HTTP10_response = "HTTP/1.0\n";
 static char *ver_HTTP11_response = "HTTP/1.1\n";*/
-static char *content_type_response = "Content-Type: %s\n";
+char *content_type_response = "Content-Type: %s\n";
 
 /**
  * HTTP OK response and header.
  */
-static char *ok_response =
+char *ok_response =
         "HTTP/1.1 200 OK\n";
 
 /**
  * HTTP bad request response, header and body.
  */
-static char *bad_request_response =
+char *bad_request_response =
         "HTTP/1.0 400 Bad Request\n"
                 "Content-type: text/html\n"
                 "\n"
@@ -50,7 +50,7 @@ static char *bad_request_response =
 /**
  * HTTP method not implemented response, header and body with method string variable.
  */
-static char *bad_method_response_template =
+char *bad_method_response_template =
         "HTTP/1.0 501 Method Not Implemented\n"
                 "Content-type: text/html\n"
                 "\n"
