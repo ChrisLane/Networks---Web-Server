@@ -1,15 +1,16 @@
-
-
 char *date_response = "Date : %s\n";
 char *content_type_response = "Content-Type: %s\n";
 char *status_response = "Status: %s\n";
 
 /**
- * HTTP OK response and header.
+ * HTTP OK response header element.
  */
 char *ok_response =
         "HTTP/1.1 200 OK\n";
 
+/**
+ * HTTP 400 response header element.
+ */
 char *bad_request_response =
         "HTTP/1.1 400 Bad Request\n";
 
@@ -24,9 +25,15 @@ char *bad_request_response_html =
                 " </body>\n"
                 "</html>\n";
 
+/**
+ * HTTP 403 response header element.
+ */
 char *forbidden_response =
         "HTTP/1.0 403 Forbidden\n";
 
+/**
+ * HTTP forbidden request body.
+ */
 char *forbidden_response_html_template =
         "<html>\n"
                 " <body>\n"
@@ -35,6 +42,9 @@ char *forbidden_response_html_template =
                 " </body>\n"
                 "</html>\n";
 
+/**
+ * HTTP 404 response header element.
+ */
 char *not_found_response =
         "HTTP/1.1 404 Not Found\n";
 
@@ -49,6 +59,9 @@ char *not_found_response_html_template =
                 " </body>\n"
                 "</html>\n";
 
+/**
+ * HTTP 501 response header element.
+ */
 char *bad_method_response =
         "HTTP/1.1 501 Method Not Implemented\n";
 

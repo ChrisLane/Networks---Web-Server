@@ -56,6 +56,10 @@ void handleResponse(int socket, char *url) {
         free(response);
 
         struct stat *fileStats = malloc(sizeof(struct stat));
+        if (!fileStats) {
+            fprintf(stderr, "Failed to allocate memory.");
+            return;
+        }
         stat(fileDest, fileStats);
 
         sendfile(socket, file, 0, (size_t) fileStats->st_size);

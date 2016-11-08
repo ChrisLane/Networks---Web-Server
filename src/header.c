@@ -6,6 +6,13 @@
 #include <magic.h>
 #include <stdlib.h>
 
+/**
+ * Generate the content type header element for the given file.
+ *
+ * @param response The header that we're concatenating with.
+ * @param fileDest The file to check the MIME type of.
+ * @return The initial response + the Content-Type header element.
+ */
 char *addContentType(char *response, char *fileDest) {
     const char *mime;
     struct magic_set *magic;
@@ -13,10 +20,14 @@ char *addContentType(char *response, char *fileDest) {
     magic_load(magic, NULL);
     mime = magic_file(magic, fileDest);
 
-    char result[256];
+    char result[100];
     snprintf(result, sizeof(result), content_type_response, mime);
 
-    char *contentType = malloc(sizeof(char) * strlen(result));
+    char *contentType = malloc(strlen(result) + 1);
+    if (!contentType) {
+        fprintf(stderr, "Failed to allocate memory.");
+        return response;
+    }
     strcpy(contentType, result);
     magic_close(magic);
 
@@ -27,8 +38,13 @@ char *addContentType(char *response, char *fileDest) {
     return strcat(response, contentType);
 }
 
+/**
+ * Generate the date header element.
+ *
+ * @return The date header element.
+ */
 char *generateDate() {
-    char result[256];
+    char result[100];
     char timebuf[50];
     time_t timer;
     struct tm *tm_info;
@@ -39,14 +55,28 @@ char *generateDate() {
     strftime(timebuf, sizeof(timebuf), "%a, %d %b %Y %H:%M:%S %Z", tm_info);
     snprintf(result, sizeof(result), date_response, timebuf);
 
-    char *date = malloc(sizeof(char) * strlen(result));
+    char *date = malloc(strlen(result) + 1);
+    if (!date) {
+        fprintf(stderr, "Failed to allocate memory.");
+        return "";
+    }
     strcpy(date, result);
 
     return date;
 }
 
+/**
+ * Generate a header for an OK request.
+ *
+ * @param fileDest The file to generate header elements with relation to.
+ * @return The header.
+ */
 char *generateOkHeader(char *fileDest) {
-    char *response = malloc(sizeof(char) * 1024);
+    char *response = malloc(sizeof(char) * 512);
+    if (!response) {
+        fprintf(stderr, "Failed to allocate memory.");
+        return "";
+    }
     strcpy(response, "");
 
     // OK
@@ -57,7 +87,7 @@ char *generateOkHeader(char *fileDest) {
     // Content-Type
     response = addContentType(response, fileDest);
     // Status
-    char status[256];
+    char status[100];
     snprintf(status, sizeof(status), status_response, "200 OK");
     strcat(response, status);
 
@@ -65,11 +95,21 @@ char *generateOkHeader(char *fileDest) {
     return response;
 }
 
+/**
+ * Generate a header for a given http status code.
+ *
+ * @param statusCode The status code to generate the header for.
+ * @return The header.
+ */
 char *generateFailHeader(int statusCode) {
-    char *response = malloc(sizeof(char) * 1024);
+    char *response = malloc(sizeof(char) * 512);
+    if (!response) {
+        fprintf(stderr, "Failed to allocate memory.");
+        return "";
+    }
     strcpy(response, "");
     char *date;
-    char status[256];
+    char status[100];
 
     switch (statusCode) {
         case 400:
