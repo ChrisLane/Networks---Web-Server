@@ -3,7 +3,6 @@
 #include <dnet.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "network.h"
 
 /**
@@ -19,8 +18,8 @@ void error(char *msg) {
 /**
  * Initialise a socket for a client to connect to.
  *
- * @param initialSocket The initial socket number.
  * @param port The port to listen on.
+ * @return Return the initial socket.
  */
 int init(const char *port) {
     int initialSocket;
@@ -49,9 +48,6 @@ int init(const char *port) {
     if (bind(initialSocket, res->ai_addr, res->ai_addrlen) < 0) {
         error("Failed to bind the socket");
     }
-
-    // Free the address info.
-    freeaddrinfo(res);
 
     return initialSocket;
 }

@@ -42,6 +42,11 @@ void sig_handler(int signo) {
     }
 }
 
+/**
+ * Handle processes based on parent/child.
+ *
+ * @param clientSocket The socket that the client is on.
+ */
 void handleProcess(int clientSocket) {
     pid_t pid = fork();
 

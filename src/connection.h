@@ -1,3 +1,3 @@
 void handleResponse(int socket, char *url);
 
-void handleRequest(int clientSocket);
+void handleRequest(int socket);
