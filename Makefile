@@ -3,7 +3,7 @@ default: all
 all: build
 
 run:
-	./server 8088
+	./server 8088 public_html
 
 clean:
 	rm -rf server

@@ -1,6 +1,6 @@
 #include <string.h>
 #include <sys/socket.h>
-#include <dnet.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "network.h"
