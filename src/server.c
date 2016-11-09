@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <unistd.h>
-#include <wait.h>
+#include <sys/wait.h>
 #include "network.h"
 #include "connection.h"
 
