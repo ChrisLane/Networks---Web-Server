@@ -1,10 +1,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
-#include "header.h"
-#include "response.h"
 #include <magic.h>
 #include <stdlib.h>
+#include "header.h"
+#include "response.h"
 
 /**
  * Generate the content type header element for the given file.
