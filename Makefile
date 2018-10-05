@@ -11,4 +11,4 @@ clean:
 .PHONY: default all run clean
 
 build:
-	gcc src/* -o server -D_POSIX_SOURCE -Wall -Werror -pedantic -std=c11 -D_GNU_SOURCE -lmagic
+	gcc src/*.{c,h} -o server -O3 -D_FORTIFY_SOURCE=2 -D_POSIX_SOURCE -Wall -Werror -pedantic -std=c11 -D_GNU_SOURCE -lmagic
