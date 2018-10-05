@@ -4,6 +4,9 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <dirent.h>
+#include <ctype.h>
+
 #include "network.h"
 #include "connection.h"
 
@@ -18,9 +21,31 @@ pid_t pid;
  * @param argv The array of arguments.
  */
 void checkRunParams(int argc, char *argv[]) {
+    // Check for the correct number of arguments
     if (argc != 3) {
         fprintf(stderr, "usage %s port homedir\n", argv[0]);
         exit(1);
+    }
+
+    // Check port is valid
+    char portChar = *argv[1];
+    if (isdigit(portChar)) {
+        int port = portChar - '0';
+        if (!(port > 0 && port <= 65535)) {
+            fprintf(stderr, "Port number not within valid range\n");
+            exit(1);
+        }
+    } else { // Not a number
+        fprintf(stderr, "Invalid port number\n");
+        exit(1);
+    }
+
+    // Check homedir is valid
+    DIR *dir = opendir(argv[2]);
+    if (dir) { // Successfully opened dir
+        closedir(dir);
+    } else { // Dir cannot be used
+        error("Error with web directory");
     }
 }
 
