@@ -99,11 +99,12 @@ void handleRequest(int socket, char *home) {
             return;
         }
 
-        if (strcmp(protocol, "HTTP/1.0") && strcmp(protocol, "HTTP/1.1")) {
+        // Check for error conditions
+        if (strcmp(protocol, "HTTP/1.0") != 0 && strcmp(protocol, "HTTP/1.1") != 0) { // Bad request
             char *response = generateFailHeader(400);
             send(socket, response, strlen(response), 0);
             send(socket, bad_request_response_html, sizeof(bad_request_response_html), 0);
-        } else if (strcmp(method, "GET")) {
+        } else if (strcmp(method, "GET") != 0) { // We only support GET
             char *response = generateFailHeader(501);
             send(socket, response, strlen(response), 0);
             char formattedError[512];
