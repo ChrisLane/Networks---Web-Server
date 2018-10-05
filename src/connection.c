@@ -22,9 +22,10 @@ void handleResponse(int socket, char *url, char *home) {
         url = "/index.html";
     }
 
-    char fileDest[256];
+    int fileDestSize = 256;
+    char fileDest[fileDestSize];
     strcpy(fileDest, home);
-    strncat(fileDest, url, 256);
+    strncat(fileDest, url, fileDestSize - strlen(home) - 1);
 
     // Check if the file exists.
     if (access(fileDest, F_OK)) {
