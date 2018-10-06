@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
     initialSocket = init(argv[1]);
 
     // Listen on the socket.
-    if (listen(initialSocket, 20) < 0) {
+    if (listen(initialSocket, 20) != 0) {
         error("Failed listening on the socket");
     }
 
