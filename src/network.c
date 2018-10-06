@@ -31,14 +31,17 @@ int init(const char *port) {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
 
-    getaddrinfo(NULL, port, &hints, &res);
+    int status = getaddrinfo(NULL, port, &hints, &res);
+    if (status != 0) {
+        error("Failed to get address info");
+    }
 
     // Make a socket.
     if ((initialSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
         error("Failed to create the initial socket");
     }
 
-    // lose the pesky "Address already in use" error message
+    // Lose the pesky "Address already in use" error message
     int yes = 1;
     if (setsockopt(initialSocket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) < 0) {
         error("Failed to set socket option. Port may stay bound for a while");
@@ -48,6 +51,8 @@ int init(const char *port) {
     if (bind(initialSocket, res->ai_addr, res->ai_addrlen) < 0) {
         error("Failed to bind the socket");
     }
+
+    freeaddrinfo(res);
 
     return initialSocket;
 }
