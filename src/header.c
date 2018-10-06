@@ -13,7 +13,7 @@
  * @param fileDest The file to check the MIME type of.
  * @return The initial response + the Content-Type header element.
  */
-char *addContentType(char *response, char *fileDest) {
+int addContentType(char *response, char *fileDest) {
     const char *mime;
     struct magic_set *magic;
     magic = magic_open(MAGIC_MIME);
@@ -26,16 +26,19 @@ char *addContentType(char *response, char *fileDest) {
     char *contentType = malloc(strlen(result) + 1);
     if (!contentType) {
         fprintf(stderr, "Failed to allocate memory.");
-        return response;
+        return -1;
     }
     strcpy(contentType, result);
     magic_close(magic);
 
     if (strstr(contentType, "text/plain")) {
-        return response;
+        return 0;
     }
 
-    return strcat(response, contentType);
+    strcat(response, contentType);
+    free(contentType);
+
+    return 0;
 }
 
 /**
@@ -84,8 +87,12 @@ char *generateOkHeader(char *fileDest) {
     // Date
     char *date = generateDate();
     strcat(response, date);
+    free(date);
+
     // Content-Type
-    response = addContentType(response, fileDest);
+    if (addContentType(response, fileDest) != 0) {
+        fprintf(stderr, "Failed to add content type for: %s", fileDest);
+    }
     // Status
     char status[100];
     snprintf(status, sizeof(status), status_response, "200 OK");
@@ -123,6 +130,9 @@ char *generateFailHeader(int statusCode) {
             strcat(response, status);
 
             strcat(response, "\n");
+
+            free(date);
+
             return response;
         case 403:
             // 403 Error Code
@@ -135,6 +145,9 @@ char *generateFailHeader(int statusCode) {
             strcat(response, status);
 
             strcat(response, "\n");
+
+            free(date);
+
             return response;
         case 404:
             // 404 Error Code
@@ -148,6 +161,8 @@ char *generateFailHeader(int statusCode) {
 
             strcat(response, "\n");
 
+            free(date);
+
             return response;
         case 501:
             // 501 Error Code
@@ -160,6 +175,9 @@ char *generateFailHeader(int statusCode) {
             strcat(response, status);
 
             strcat(response, "\n");
+
+            free(date);
+
             return response;
         default:
             // Date
@@ -167,6 +185,9 @@ char *generateFailHeader(int statusCode) {
             strcat(response, date);
 
             strcat(response, "\n");
+
+            free(date);
+
             return response;
     }
 }

@@ -1,4 +1,4 @@
-char *addContentType(char *response, char *fileDest);
+int addContentType(char *response, char *fileDest);
 
 char *generateDate();
 
