@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "network.h"
 #include "connection.h"
@@ -27,10 +28,16 @@ void checkRunParams(int argc, char *argv[]) {
         exit(1);
     }
 
+    // Convert port string to number
+    size_t len = strlen(argv[1]) + 1;
+    char portChar[len];
+    strncpy(portChar, argv[1], len);
+    portChar[len - 1] = '\0'; // Terminate the string...just in case
+    char *ptr;
+    long int port = strtol(portChar, &ptr, 10);
+
     // Check port is valid
-    char portChar = *argv[1];
-    if (isdigit(portChar)) {
-        int port = portChar - '0';
+    if (port != 0) {
         if (!(port > 0 && port <= 65535)) {
             fprintf(stderr, "Port number not within valid range\n");
             exit(1);
